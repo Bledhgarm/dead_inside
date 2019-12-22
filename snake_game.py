@@ -2,6 +2,15 @@ import turtle
 import time
 import random
 from math import sin, cos
+import os
+
+def trying():
+    try:
+        with open('score.txt', 'a+') as f:
+            if os.stat('score.txt').st_size == 0:
+                f.write('0')
+    except FileNotFoundError:
+        print('файла не существует')
 
 
 def up():
@@ -25,6 +34,7 @@ def left():
 
 
 def gameover():
+    global max_score
     screen.bgcolor('red')
     draw.up()
     draw.goto(0, 0)
@@ -33,15 +43,20 @@ def gameover():
                font=('Arial', 32, 'normal'))
     draw_score.clear()
     draw_score.write(f'Score: {count}   Max score: {max(count, max_score)}', align='center',
-                     font=('Arial', 15, 'normal'))
+                     font=('Arial', 20, 'normal'))
     score_file = open(filename, 'w')
     score_file.write(str(max(count, max_score)))
     score_file.close()
 
 
 def escape():
+    score_file = open(filename, 'w')
+    score_file.write(str(max(count, max_score)))
+    score_file.close()
     screen.bye()
     screen.exitonclick('Escape')
+
+
 
 
 def boom():
@@ -78,18 +93,16 @@ def boom():
 
 def place_enemy():
     for enemy in enemies:
-        enemy.setheading(random.choice((0, 90, 180, 270)))
         x = random.randrange(-half_field + half_cell,
                              half_field - half_cell, cell)
         y = random.randrange(-half_field + half_cell,
                              half_field - half_cell, cell)
-        while ((x, y) == food.pos() or
-               (x, y) == head.pos() or
-               any((x, y) == e.pos() for e in enemies)):
+        if (x, y) == food.pos() or head.pos():
             x = random.randrange(-half_field + half_cell,
                                  half_field - half_cell, cell)
             y = random.randrange(-half_field + half_cell,
                                  half_field - half_cell, cell)
+        enemy.setheading(random.choice((0, 90, 180, 270)))
         enemy.goto(x, y)
 
 
@@ -120,6 +133,7 @@ draw.goto(half_field, -half_field)
 draw.goto(-half_field, -half_field)
 draw.goto(-half_field, half_field)
 
+trying()
 score_file = open(filename, 'r')
 max_score = int(score_file.read())
 score_file.close()
@@ -133,11 +147,15 @@ for i in range(n):
     draw.goto(draw.xcor() - cell, draw.ycor())
     draw.goto(draw.xcor(), draw.ycor() + field * (-1) ** i)
 # for playing with buttons
+screen.onkeypress(up, 'w')
+screen.onkeypress(down, 's')
+screen.onkeypress(left, 'a')
+screen.onkeypress(right, 'd')
+screen.onkeypress(escape, 'Escape')
 screen.onkeypress(up, 'Up')
 screen.onkeypress(down, 'Down')
 screen.onkeypress(left, 'Left')
 screen.onkeypress(right, 'Right')
-screen.onkeypress(escape, 'Escape')
 screen.listen()
 
 screen.tracer(500, 0)
@@ -180,7 +198,7 @@ while True:
         segment.penup()
         snake.append(segment)
         count += 100
-        if count % 200 == 0:
+        if count % 300 == 0:
             place_enemy()
         if count % 500 == 0:
             enemy = turtle.Turtle()
@@ -228,8 +246,9 @@ while True:
 
     draw_score.clear()
     draw_score.write(f'Score: {count}   Max score: {max(count, max_score)}', align='center',
-                     font=('Arial', 15, 'normal'))
+                     font=('Arial', 20, 'normal'))
     screen.update()
-    time.sleep(0.09)
+    time.sleep(0.1)
+
 boom()
 screen.mainloop()

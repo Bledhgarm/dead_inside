@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Figures</string>
+    <string name="undo">UNDO</string>
+    <string name="rect">Rect</string>
+    <string name="circle">Circle</string>
+    <string name="triangle">Triangle</string>
+    <string name="draw">Draw</string>
+    <string name="move">Move</string>
+    <string-array name="colors">
+        <item>#FFFFFFFF</item>
+        <item>#FFBB86FC</item>
+        <item>#FF6200EE</item>
+        <item>#FF3700B3</item>
+        <item>#FF03DAC5</item>
+        <item>#FF018786</item>
+        <item>#FF000000</item>
+
+    </string-array>
+</resources>
